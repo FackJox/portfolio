@@ -5,116 +5,276 @@ Command: npx gltfjsx@6.1.4 .\face anim combined fixed anims.glb --transform
 
 import React, { useRef, useState, useEffect } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
+import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+
+const randomDelay = Math.floor(Math.random() * (15000 - 5000 + 1) + 5000);
+await new Promise((resolve) => setTimeout(resolve, randomDelay));
+
 
 export default function Head(props) {
 	const group = useRef();
 	const { nodes, materials, animations } = useGLTF("/head.glb");
 	const { actions, mixer } = useAnimations(animations, group);
 	const clock = new THREE.Clock();
-	const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+	// const { scene } = useThree();
+
+	const idleAction = actions["Idle"];
+	const idleBackwardsNoEyesAction = actions["IdleBackwardsNoEyes"];
+	const leftFaceAction = actions["RightFace"];
+	const leftSkullAction = actions["RightSkull"];
+	const rightFaceAction = actions["LeftFace"];
+	const rightSkullAction = actions["LeftSkull"];
+	const bottomFaceAction = actions["BottomFace"];
+
+	
+
+	// useEffect(() => {
+	// 	console.log("inside use effect1", mixer._actions )
+
+	// 	console.log("inside use effect2", actions)
+	// 	if (mixer && mixer._actions) {
+	// 	  console.log("Current animation:", mixer.clipAction(mixer._actions[0].clip).getClip().name);
+	// 	}
+	//   }, [mixer]);
+
+	// useEffect(() => {
+	// 	console.info(
+	// 		"🚀 ~ file: Head.jsx:36 ~ useEffect ~ idleAction:",
+	// 		idleAction.isRunning()
+	// 	);
+	// 	console.info(
+	// 		"🚀 ~ file: Head.jsx:38 ~ useEffect ~ idleBackwardsNoEyesAction:",
+	// 		idleBackwardsNoEyesAction.isRunning()
+	// 	);
+	// 	console.info(
+	// 		"🚀 ~ file: Head.jsx:40 ~ useEffect ~ leftFaceAction:",
+	// 		leftFaceAction.isRunning()
+	// 	);
+	// 	console.info(
+	// 		"🚀 ~ file: Head.jsx:42 ~ useEffect ~ leftSkullAction:",
+	// 		leftSkullAction.isRunning()
+	// 	);
+	// 	console.info(
+	// 		"🚀 ~ file: Head.jsx:44 ~ useEffect ~ rightFaceAction:",
+	// 		rightFaceAction.isRunning()
+	// 	);
+	// 	console.info(
+	// 		"🚀 ~ file: Head.jsx:46 ~ useEffect ~ rightSkullAction:",
+	// 		rightSkullAction.isRunning()
+	// 	);
+	// 	console.info(
+	// 		"🚀 ~ file: Head.jsx:48 ~ useEffect ~ bottomFaceAction:",
+	// 		bottomFaceAction.isRunning()
+	// 	);
+	// }, [
+	// 	idleAction,
+	// 	idleBackwardsNoEyesAction,
+	// 	leftFaceAction,
+	// 	leftSkullAction,
+	// 	rightFaceAction,
+	// 	rightSkullAction,
+	// 	bottomFaceAction,
+	// ]);
+
+	const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+
+useEffect(() => {
+  const handleMouseMove = (e) => {
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
+    setMousePos({ x, y });
+	console.log("mouse POS", mousePos)
+  };
+
+  window.addEventListener("mousemove", handleMouseMove);
+  return () => window.removeEventListener("mousemove", handleMouseMove);
+}, []);
+
 
 	useEffect(() => {
-		const handleMouseMove = (e) => {
-			const x = e.clientX / window.innerWidth;
-			const y = e.clientY / window.innerHeight;
-			setMousePos({ x, y });
-		};
+		if (actions){
+		console.log("🚀 ~ file: Head.jsx:98 ~ useEffect ~ actions:", actions)
+		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ 		leftFaceAction:", 		leftFaceAction)
+		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ 	leftSkullAction:", 	leftSkullAction)
+		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ 	rightFaceAction:", 	rightFaceAction)
+		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ rightSkullAction:", rightSkullAction)
+		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ bottomFaceAction:", bottomFaceAction)
+	
+			const handleAnimation = () => {
+			
+				
+				mixer.stopAllAction()
+				
+				if (mousePos.x <= 0.45 && mousePos.y <= 0.45) {
+					const progress = 1 - (mousePos.x / 0.45);
+					leftFaceAction.time = leftFaceAction._clip.duration * progress;
+					leftSkullAction.time = leftSkullAction._clip.duration * progress;
+					leftFaceAction.clampWhenFinished = true
+					leftFaceAction.loop = THREE.LoopOnce
+					leftSkullAction.clampWhenFinished = true
+					leftSkullAction.loop = THREE.LoopOnce
+					leftFaceAction.play();
+					leftSkullAction.play();
+				} else if (mousePos.x >= 0.55 && mousePos.y <= 0.45) {
+					const progress = (mousePos.x - 0.55) / 0.25;
+					rightFaceAction.time = rightFaceAction._clip.duration * progress;
+					rightSkullAction.time = rightSkullAction._clip.duration * progress;
+					rightFaceAction.clampWhenFinished = true
+					rightFaceAction.loop = THREE.LoopOnce
+					rightSkullAction.clampWhenFinished = true
+					rightSkullAction.loop = THREE.LoopOnce
+					rightFaceAction.play();
+					rightSkullAction.play();
+				} else if (mousePos.y >= 0.55) {
+					const progress = (mousePos.y - 0.55) / 0.25;
+					bottomFaceAction.time = bottomFaceAction._clip.duration * progress;
+					bottomFaceAction.clampWhenFinished = true
+					bottomFaceAction.loop = THREE.LoopOnce
+					bottomFaceAction.play()
+				}
+			};
+				
+			handleAnimation();
+		}
+	  }, [mousePos, actions]);
+	  
+	  
+	// useEffect(() => {
+	// 	const leftFaceAction = actions["RightFace"];
+	// 	const leftSkullAction = actions["RightSkull"];
+	// 	const rightFaceAction = actions["LeftFace"];
+	// 	const rightSkullAction = actions["LeftSkull"];
+	// 	const bottomFaceAction = actions["BottomFace"];
 
-		window.addEventListener("mousemove", handleMouseMove);
-		return () => {
-			window.removeEventListener("mousemove", handleMouseMove);
-		};
-	}, []);
+	// 	const updateAnimations = () => {
+	// 		let targetLeftFaceTime = 0;
+	// 		let targetRightFaceTime = 0;
+	// 		let targetBottomFaceTime = 0;
 
-  
+	// 		if (mousePos.x <= 0.45 && mousePos.x >= 0.2 && mousePos.y < 0.5) {
+	// 			targetRightFaceTime =
+	// 				(mousePos.x * 2 - 1) * rightFaceAction.getClip().duration;
+	// 		}
+
+	// 		if (mousePos.x >= 0.55 && mousePos.x <= 0.8 && mousePos.y < 0.5) {
+	// 			targetLeftFaceTime =
+	// 				(mousePos.x * 2 - 1) * leftFaceAction.getClip().duration;
+	// 		}
+
+	// 		if (mousePos.y > 0.5 && mousePos.y <= 0.8) {
+	// 			targetBottomFaceTime =
+	// 				(mousePos.y * 2 - 1) * bottomFaceAction.getClip().duration;
+	// 		}
+
+	// 		rightFaceAction.time = targetRightFaceTime;
+	// 		rightSkullAction.time = targetRightFaceTime;
+	// 		leftFaceAction.time = targetLeftFaceTime;
+	// 		leftSkullAction.time = targetLeftFaceTime;
+	// 		bottomFaceAction.time = targetBottomFaceTime;
+
+	// 		const blendFactor = 0.1; // Adjust this value to control the blend smoothness
+
+	// 		leftFaceAction.time = THREE.MathUtils.lerp(
+	// 			leftFaceAction.time,
+	// 			targetLeftFaceTime,
+	// 			blendFactor
+	// 		);
+	// 		leftSkullAction.time = THREE.MathUtils.lerp(
+	// 			leftSkullAction.time,
+	// 			targetLeftFaceTime,
+	// 			blendFactor
+	// 		);
+	// 		rightFaceAction.time = THREE.MathUtils.lerp(
+	// 			rightFaceAction.time,
+	// 			targetRightFaceTime,
+	// 			blendFactor
+	// 		);
+	// 		rightSkullAction.time = THREE.MathUtils.lerp(
+	// 			rightSkullAction.time,
+	// 			targetRightFaceTime,
+	// 			blendFactor
+	// 		);
+	// 		bottomFaceAction.time = THREE.MathUtils.lerp(
+	// 			bottomFaceAction.time,
+	// 			targetBottomFaceTime,
+	// 			blendFactor
+	// 		);
+	// 	};
+
+	// 	// const animate = () => {
+	// 	// 	const delta = clock.getDelta();
+	// 	// 	mixer.update(delta);
+	// 	// 	updateAnimations();
+	// 	// 	requestAnimationFrame(animate);
+	// 	// };
+
+	// 	leftFaceAction.clampWhenFinished = true;
+	// 	leftSkullAction.clampWhenFinished = true;
+	// 	rightFaceAction.clampWhenFinished = true;
+	// 	rightSkullAction.clampWhenFinished = true;
+	// 	bottomFaceAction.clampWhenFinished = true;
+
+	// 	// leftFaceAction.play();
+	// 	// leftSkullAction.play();
+	// 	// rightFaceAction.play();
+	// 	// rightSkullAction.play();
+	// 	// bottomFaceAction.play();
+	// 	updateAnimations();
+
+	// }, [mousePos, actions, mixer]);
+
+
+
 
 	useEffect(() => {
 		const idleAction = actions["Idle"];
 		const idleBackwardsNoEyesAction = actions["IdleBackwardsNoEyes"];
-		console.log("🚀 ~ file: Head.jsx:33 ~ useEffect ~ actions:", actions);
-		const leftFaceAction = actions["RightFace"];
-		const leftSkullAction = actions["RightSkull"];
-		const rightFaceAction = actions["LeftFace"];
-		const rightSkullAction = actions["LeftSkull"];
-		const bottomFaceAction = actions["BottomFace"];
 
-		const updateAnimations = () => {
-      let targetLeftFaceTime = 0;
-      let targetRightFaceTime = 0;
-      let targetBottomFaceTime = 0;
-    
-      if (mousePos.x <= 0.45 && mousePos.x >= 0.2 && mousePos.y < 0.5) {
-        targetLeftFaceTime = (mousePos.x * 2 - 1) * rightFaceAction.getClip().duration;
-      }
-    
-      if (mousePos.x >= 0.55 && mousePos.x <= 0.8 && mousePos.y < 0.5) {
-        targetRightFaceTime = (mousePos.x * 2 - 1) * leftFaceAction.getClip().duration;
-      }
-    
-      if (mousePos.y > 0.5 && mousePos.y <= 0.8) {
-        targetBottomFaceTime = (mousePos.y * 2 - 1) * bottomFaceAction.getClip().duration;
-      }
-    
-      leftFaceAction.time = targetRightFaceTime / 2;
-      leftSkullAction.time = targetRightFaceTime / 2;
-      rightFaceAction.time = targetLeftFaceTime / 2;
-      rightSkullAction.time = targetLeftFaceTime / 2;
-      bottomFaceAction.time = targetBottomFaceTime / 2;
-    
-      const blendFactor = 0.1; // Adjust this value to control the blend smoothness
-    
-      leftFaceAction.time = THREE.MathUtils.lerp(leftFaceAction.time, targetRightFaceTime, blendFactor);
-      leftSkullAction.time = THREE.MathUtils.lerp(leftSkullAction.time, targetRightFaceTime, blendFactor);
-      rightFaceAction.time = THREE.MathUtils.lerp(rightFaceAction.time, targetLeftFaceTime, blendFactor);
-      rightSkullAction.time = THREE.MathUtils.lerp(rightSkullAction.time, targetLeftFaceTime, blendFactor);
-      bottomFaceAction.time = THREE.MathUtils.lerp(bottomFaceAction.time, targetBottomFaceTime, blendFactor);
-    };
+		const playIdleAnimations = async () => {
+			// Play the first idle animation
+			idleAction.reset().play();
+			console.log("made it aby");
+			await new Promise((resolve) => {
+				setTimeout(
+					resolve,
+					idleBackwardsNoEyesAction.getClip().duration * 1000 +
+						randomDelay
+				);
+			});
 
-    
-		const animate = () => {
-			const delta = clock.getDelta();
-			mixer.update(delta);
-			updateAnimations();
-			requestAnimationFrame(animate);
+			idleAction.stop();
+
+			idleBackwardsNoEyesAction.reset().play();
+			await new Promise((resolve) => {
+				setTimeout(
+					resolve,
+					idleAction.getClip().duration * 1000 + randomDelay
+				);
+			});
+			// Stop the second idle animation
+			idleBackwardsNoEyesAction.stop();
+
+			// Play both idle animations together
+			idleBackwardsNoEyesAction.reset().play();
+			idleAction.reset().play();
+			await new Promise((resolve) => {
+				setTimeout(
+					resolve,
+					idleBackwardsNoEyesAction.getClip().duration * 1000 +
+						randomDelay
+				);
+			});
+
+			idleAction.stop();
+			idleBackwardsNoEyesAction.stop();
+			// Repeat the sequence
+			playIdleAnimations();
 		};
 
-		leftFaceAction.clampWhenFinished = true;
-		leftSkullAction.clampWhenFinished = true;
-		rightFaceAction.clampWhenFinished = true;
-		rightSkullAction.clampWhenFinished = true;
-		bottomFaceAction.clampWhenFinished = true;
-
-
-		leftFaceAction.play();
-		leftSkullAction.play();
-		rightFaceAction.play();
-		rightSkullAction.play();
-		bottomFaceAction.play();
-		animate();
-
-    const playIdleAnimations = async () => {
-      // Play the first idle animation
-      leftFaceAction.reset().play();
-      console.log("made it aby")
-      await new Promise((resolve) => setTimeout(resolve, leftFaceAction.getClip().duration * 1000));
-    
-      // Play the second idle animation
-      rightFaceAction.reset().play();
-      await new Promise((resolve) => setTimeout(resolve, rightFaceAction.getClip().duration * 1000));
-    
-      // Play both idle animations together
-      leftFaceAction.reset().play();
-      rightFaceAction.reset().play();
-      await new Promise((resolve) => setTimeout(resolve, leftFaceAction.getClip().duration * 1000));
-    
-      // Repeat the sequence
-      playIdleAnimations();
-    };
-   
-    playIdleAnimations();
-    
-	}, [mousePos, actions, mixer]);
+		playIdleAnimations();
+	}, [actions, mixer]);
 
 	return (
 		<group
