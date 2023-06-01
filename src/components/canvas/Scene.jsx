@@ -1,12 +1,13 @@
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Stage, PresentationControls, OrbitControls, RandomizedLight } from '@react-three/drei';
+import { Stage, PresentationControls, OrbitControls, RandomizedLight, AdaptiveDpr } from '@react-three/drei';
 import { Perf } from 'r3f-perf';
 import Head from './head/Head'
 
 export default function Scene() {
   return (
-    <Canvas>
+    <Canvas frameloop='demand' mode='concurrent' >
+      <AdaptiveDpr pixelated />
       <Stage intensity={0.0} >
         <PresentationControls>
         <Head />

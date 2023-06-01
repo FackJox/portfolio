@@ -141,92 +141,6 @@ useEffect(() => {
 	  }, [mousePos, actions]);
 	  
 	  
-	// useEffect(() => {
-	// 	const leftFaceAction = actions["RightFace"];
-	// 	const leftSkullAction = actions["RightSkull"];
-	// 	const rightFaceAction = actions["LeftFace"];
-	// 	const rightSkullAction = actions["LeftSkull"];
-	// 	const bottomFaceAction = actions["BottomFace"];
-
-	// 	const updateAnimations = () => {
-	// 		let targetLeftFaceTime = 0;
-	// 		let targetRightFaceTime = 0;
-	// 		let targetBottomFaceTime = 0;
-
-	// 		if (mousePos.x <= 0.45 && mousePos.x >= 0.2 && mousePos.y < 0.5) {
-	// 			targetRightFaceTime =
-	// 				(mousePos.x * 2 - 1) * rightFaceAction.getClip().duration;
-	// 		}
-
-	// 		if (mousePos.x >= 0.55 && mousePos.x <= 0.8 && mousePos.y < 0.5) {
-	// 			targetLeftFaceTime =
-	// 				(mousePos.x * 2 - 1) * leftFaceAction.getClip().duration;
-	// 		}
-
-	// 		if (mousePos.y > 0.5 && mousePos.y <= 0.8) {
-	// 			targetBottomFaceTime =
-	// 				(mousePos.y * 2 - 1) * bottomFaceAction.getClip().duration;
-	// 		}
-
-	// 		rightFaceAction.time = targetRightFaceTime;
-	// 		rightSkullAction.time = targetRightFaceTime;
-	// 		leftFaceAction.time = targetLeftFaceTime;
-	// 		leftSkullAction.time = targetLeftFaceTime;
-	// 		bottomFaceAction.time = targetBottomFaceTime;
-
-	// 		const blendFactor = 0.1; // Adjust this value to control the blend smoothness
-
-	// 		leftFaceAction.time = THREE.MathUtils.lerp(
-	// 			leftFaceAction.time,
-	// 			targetLeftFaceTime,
-	// 			blendFactor
-	// 		);
-	// 		leftSkullAction.time = THREE.MathUtils.lerp(
-	// 			leftSkullAction.time,
-	// 			targetLeftFaceTime,
-	// 			blendFactor
-	// 		);
-	// 		rightFaceAction.time = THREE.MathUtils.lerp(
-	// 			rightFaceAction.time,
-	// 			targetRightFaceTime,
-	// 			blendFactor
-	// 		);
-	// 		rightSkullAction.time = THREE.MathUtils.lerp(
-	// 			rightSkullAction.time,
-	// 			targetRightFaceTime,
-	// 			blendFactor
-	// 		);
-	// 		bottomFaceAction.time = THREE.MathUtils.lerp(
-	// 			bottomFaceAction.time,
-	// 			targetBottomFaceTime,
-	// 			blendFactor
-	// 		);
-	// 	};
-
-	// 	// const animate = () => {
-	// 	// 	const delta = clock.getDelta();
-	// 	// 	mixer.update(delta);
-	// 	// 	updateAnimations();
-	// 	// 	requestAnimationFrame(animate);
-	// 	// };
-
-	// 	leftFaceAction.clampWhenFinished = true;
-	// 	leftSkullAction.clampWhenFinished = true;
-	// 	rightFaceAction.clampWhenFinished = true;
-	// 	rightSkullAction.clampWhenFinished = true;
-	// 	bottomFaceAction.clampWhenFinished = true;
-
-	// 	// leftFaceAction.play();
-	// 	// leftSkullAction.play();
-	// 	// rightFaceAction.play();
-	// 	// rightSkullAction.play();
-	// 	// bottomFaceAction.play();
-	// 	updateAnimations();
-
-	// }, [mousePos, actions, mixer]);
-
-
-
 
 	useEffect(() => {
 		const idleAction = actions["Idle"];
@@ -274,7 +188,7 @@ useEffect(() => {
 		};
 
 		playIdleAnimations();
-	}, [actions, mixer]);
+	}, [mousePos, actions, mixer]);
 
 	return (
 		<group
