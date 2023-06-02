@@ -6,7 +6,7 @@ import Head from './head/Head'
 
 export default function Scene() {
   return (
-    <Canvas frameloop='demand' mode='concurrent' >
+    <Canvas  mode='concurrent' >
       <AdaptiveDpr pixelated />
       <Stage intensity={0.0} >
         <PresentationControls>

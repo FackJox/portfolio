@@ -11,7 +11,6 @@ import * as THREE from "three";
 const randomDelay = Math.floor(Math.random() * (15000 - 5000 + 1) + 5000);
 await new Promise((resolve) => setTimeout(resolve, randomDelay));
 
-
 export default function Head(props) {
 	const group = useRef();
 	const { nodes, materials, animations } = useGLTF("/head.glb");
@@ -27,8 +26,6 @@ export default function Head(props) {
 	const rightFaceAction = actions["LeftFace"];
 	const rightSkullAction = actions["LeftSkull"];
 	const bottomFaceAction = actions["BottomFace"];
-
-	
 
 	// useEffect(() => {
 	// 	console.log("inside use effect1", mixer._actions )
@@ -79,68 +76,79 @@ export default function Head(props) {
 	// ]);
 
 	const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+	const mousePosRef = useRef(mousePos)
 
-useEffect(() => {
-  const handleMouseMove = (e) => {
-    const x = e.clientX / window.innerWidth;
-    const y = e.clientY / window.innerHeight;
-    setMousePos({ x, y });
-	console.log("mouse POS", mousePos)
-  };
+	useEffect(() => {
+		mousePosRef.current = mousePos;
+	  }, [mousePos]);
+	
 
-  window.addEventListener("mousemove", handleMouseMove);
-  return () => window.removeEventListener("mousemove", handleMouseMove);
-}, []);
+	useEffect(() => {
+		const handleMouseMove = (e) => {
+			const x = e.clientX / window.innerWidth;
+			const y = e.clientY / window.innerHeight;
+			setMousePos({ x, y });
+			// console.log("mouse POS", mousePos);
+		};
+
+		window.addEventListener("mousemove", handleMouseMove);
+		return () => window.removeEventListener("mousemove", handleMouseMove);
+	}, [mousePos]);
+
+	useFrame((_, delta) => {
+		// handleAnimation(mousePosRef.current);
+		mixer.update(delta);
+		// console.log("🚀 ~ file: Head.jsx:98 ~ useFrame ~ mousePosRef.current:", mousePosRef.current)
+	});
 
 
 	useEffect(() => {
-		if (actions){
-		console.log("🚀 ~ file: Head.jsx:98 ~ useEffect ~ actions:", actions)
-		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ 		leftFaceAction:", 		leftFaceAction)
-		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ 	leftSkullAction:", 	leftSkullAction)
-		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ 	rightFaceAction:", 	rightFaceAction)
-		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ rightSkullAction:", rightSkullAction)
-		console.log("🚀 ~ file: Head.jsx:143 ~ handleAnimation ~ bottomFaceAction:", bottomFaceAction)
-	
-			const handleAnimation = () => {
-			
+		// const handleAnimation = () => {
+		// 	if (actions) {
+				let mousePos = mousePosRef.current
 				
-				mixer.stopAllAction()
-				
+				console.log("🚀 ~ file: Head.jsx:107 ~ useEffect ~ mousePos:", mousePos)
+				mixer.stopAllAction();
+
 				if (mousePos.x <= 0.45 && mousePos.y <= 0.45) {
-					const progress = 1 - (mousePos.x / 0.45);
-					leftFaceAction.time = leftFaceAction._clip.duration * progress;
-					leftSkullAction.time = leftSkullAction._clip.duration * progress;
-					leftFaceAction.clampWhenFinished = true
-					leftFaceAction.loop = THREE.LoopOnce
-					leftSkullAction.clampWhenFinished = true
-					leftSkullAction.loop = THREE.LoopOnce
+					const progress = 1 - mousePos.x / 0.45;
+					leftFaceAction.time =
+						leftFaceAction._clip.duration * progress;
+					leftSkullAction.time =
+						leftSkullAction._clip.duration * progress;
+					leftFaceAction.clampWhenFinished = true;
+					leftFaceAction.loop = THREE.LoopOnce;
+					leftSkullAction.clampWhenFinished = true;
+					leftSkullAction.loop = THREE.LoopOnce;
 					leftFaceAction.play();
 					leftSkullAction.play();
 				} else if (mousePos.x >= 0.55 && mousePos.y <= 0.45) {
 					const progress = (mousePos.x - 0.55) / 0.25;
-					rightFaceAction.time = rightFaceAction._clip.duration * progress;
-					rightSkullAction.time = rightSkullAction._clip.duration * progress;
-					rightFaceAction.clampWhenFinished = true
-					rightFaceAction.loop = THREE.LoopOnce
-					rightSkullAction.clampWhenFinished = true
-					rightSkullAction.loop = THREE.LoopOnce
+					rightFaceAction.time =
+						rightFaceAction._clip.duration * progress;
+					rightSkullAction.time =
+						rightSkullAction._clip.duration * progress;
+					rightFaceAction.clampWhenFinished = true;
+					rightFaceAction.loop = THREE.LoopOnce;
+					rightSkullAction.clampWhenFinished = true;
+					rightSkullAction.loop = THREE.LoopOnce;
 					rightFaceAction.play();
 					rightSkullAction.play();
 				} else if (mousePos.y >= 0.55) {
 					const progress = (mousePos.y - 0.55) / 0.25;
-					bottomFaceAction.time = bottomFaceAction._clip.duration * progress;
-					bottomFaceAction.clampWhenFinished = true
-					bottomFaceAction.loop = THREE.LoopOnce
-					bottomFaceAction.play()
+					bottomFaceAction.time =
+						bottomFaceAction._clip.duration * progress;
+					bottomFaceAction.clampWhenFinished = true;
+					bottomFaceAction.loop = THREE.LoopOnce;
+					bottomFaceAction.play();
 				}
-			};
+
 				
-			handleAnimation();
-		}
-	  }, [mousePos, actions]);
-	  
-	  
+			// };
+
+			// handleAnimation()
+		// }
+	}, [mousePosRef.current, actions]);
 
 	useEffect(() => {
 		const idleAction = actions["Idle"];
