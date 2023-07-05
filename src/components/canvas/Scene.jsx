@@ -7,7 +7,7 @@ import { suspend } from 'suspend-react';
 const warehouse = import('@pmndrs/assets/hdri/warehouse.exr')
 
 export default function Scene() {
-  console.log("warehouse", warehouse)
+  // console.log("warehouse", warehouse)
   return (
     <Canvas  mode='concurrent' >
       <AdaptiveDpr pixelated />
