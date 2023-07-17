@@ -216,6 +216,7 @@ export default function Head(props) {
 			leftSkullAction.setDuration(leftSkullAction._clip.duration)
 			leftSkullAction.clampWhenFinished = true
 			leftSkullAction.loop = THREE.LoopOnce
+			leftFaceAction.setEffectiveWeight(0);
 			leftSkullAction.play();
 
 
@@ -223,18 +224,20 @@ export default function Head(props) {
 			rightFaceAction.setDuration(rightFaceAction._clip.duration)
 			rightFaceAction.clampWhenFinished = true
 			rightFaceAction.loop = THREE.LoopOnce
+			rightFaceAction.setEffectiveWeight(0);
 			rightFaceAction.play();
 			rightSkullAction.timeScale = 1
 			rightSkullAction.setDuration(rightSkullAction._clip.duration)
 			rightSkullAction.clampWhenFinished = true
 			rightSkullAction.loop = THREE.LoopOnce
 			rightSkullAction.play();
-
-
+			
+			
 			bottomFaceAction.timeScale = 1
 			bottomFaceAction.setDuration(bottomFaceAction._clip.duration)
 			bottomFaceAction.clampWhenFinished = true
 			bottomFaceAction.loop = THREE.LoopOnce
+			bottomFaceAction.setEffectiveWeight(0);
 			bottomFaceAction.play();
 
 			requestAnimationFrame(handleAnimation);
@@ -244,74 +247,81 @@ export default function Head(props) {
 	}, [mousePosRef.current, actions, leftFaceAction, leftSkullAction, rightFaceAction, rightSkullAction, bottomFaceAction])
 
 	
-// 	const playIdleAnimation = () => {
-// 		return new Promise(resolve => {
-// 			if (!idleAction) {
-// 				console.error('idleAction is undefined');
-// 				return;
-// 			  }
-// 			idleAction.reset().play();
-// 			idleAction.loop = THREE.LoopOnce
-// 			mixer.addEventListener('finished', resolve)
-// 			console.log("playIdleAnimation")
-// 		});
-// 	}
+	const playIdleAnimation = () => {
+		return new Promise(resolve => {
+			if (!idleAction) {
+				console.error('idleAction is undefined');
+				return;
+			  }
+			idleAction.reset().play();
+			idleAction.loop = THREE.LoopOnce
+			idleAction.setEffectiveWeight(1);
+			mixer.addEventListener('finished', resolve)
+			console.log("playIdleAnimation")
+		});
+	}
 	
-// 	const playIdleBackwardsAnimation = () => {
-// 		return new Promise(resolve => {
-// 			if (!idleBackwardsNoEyesAction) {
-// 				console.error('idleBackwardsNoEyesAction is undefined');
-// 				return;
-// 			  }
-// 			idleBackwardsNoEyesAction.reset().play();
-// 			idleAction.loop = THREE.LoopOnce
-// 			mixer.addEventListener('finished', resolve)
-// 			console.log("playIdleBackwardsAnimation")
+	const playIdleBackwardsAnimation = () => {
+		return new Promise(resolve => {
+			if (!idleBackwardsNoEyesAction) {
+				console.error('idleBackwardsNoEyesAction is undefined');
+				return;
+			  }
+			idleBackwardsNoEyesAction.reset().play();
+			idleAction.setEffectiveWeight(1);
+			idleBackwardsNoEyesAction.setEffectiveWeight(1);
+			idleAction.loop = THREE.LoopOnce
+			mixer.addEventListener('finished', resolve)
+			console.log("playIdleBackwardsAnimation")
 
-// 		});
-// 	}
+		});
+	}
 	
-// 	const playBothIdleAnimations = () => {
-// 		return new Promise(resolve => {
-// 			if (!idleBackwardsNoEyesAction && !idleAction) {
-// 				console.error('idleBackwardsNoEyesAction and idleActionis undefined');
-// 				return;
-// 			  }
+	const playBothIdleAnimations = () => {
+		return new Promise(resolve => {
+			if (!idleBackwardsNoEyesAction && !idleAction) {
+				console.error('idleBackwardsNoEyesAction and idleActionis undefined');
+				return;
+			  }
 
-// 			  idleBackwardsNoEyesAction.loop = THREE.LoopOnce
-// 			idleBackwardsNoEyesAction.reset().play();
-// 			idleAction.loop = THREE.LoopOnce
-// 			idleAction.reset().play();
-// 			mixer.addEventListener('finished', resolve)
-// 			console.log("playBothIdleAnimations")
+			idleBackwardsNoEyesAction.loop = THREE.LoopOnce
+			idleBackwardsNoEyesAction.setEffectiveWeight(1);
+			idleBackwardsNoEyesAction.reset().play();
+			idleAction.loop = THREE.LoopOnce
+			idleAction.setEffectiveWeight(1);
+			idleAction.reset().play();
+			mixer.addEventListener('finished', resolve)
+			console.log("playBothIdleAnimations")
 
-// 		});
-// 	}
+		});
+	}
 
-// 	const animationFunctions = [playIdleAnimation, playIdleBackwardsAnimation, playBothIdleAnimations];
+	const animationFunctions = [playIdleAnimation, playIdleBackwardsAnimation, playBothIdleAnimations];
 
-// 	const currentAnimation = useRef();  // Add this line
+	const currentAnimation = useRef();  
  
-// useEffect(() => {
-// 	if (idleBackwardsNoEyesAction && idleAction) {
-//   (async () => {
-//     while (true) {
-//       let randomIndex;
-//       do {
-//         randomIndex = Math.floor(Math.random() * animationFunctions.length);
-//       } while (animationFunctions[randomIndex] === currentAnimation.current);
-//       const selectedFunction = animationFunctions[randomIndex];
-//       currentAnimation.current = selectedFunction; 
+useEffect(() => {
+	if (idleBackwardsNoEyesAction && idleAction) {
+  (async () => {
+    while (true) {
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * animationFunctions.length);
+      } while (animationFunctions[randomIndex] === currentAnimation.current);
+      const selectedFunction = animationFunctions[randomIndex];
+      currentAnimation.current = selectedFunction; 
       
-//       const randomSpeed = Math.random() * (1.0 - 0.5) + 0.5;
-//       mixer.timeScale = randomSpeed
-//       console.log("randomSpeed", randomSpeed)
-//       mixer.stopAllAction()
-//       await selectedFunction();
-//     }
-//   })();
-// }
-// }, [mixer, actions, idleBackwardsNoEyesAction, idleAction]);  
+      const randomSpeed = Math.random() * (1.0 - 0.5) + 0.5;
+      mixer.timeScale = randomSpeed
+      console.log("randomSpeed", randomSpeed)
+      mixer.stopAllAction()
+	  const delayTimeInMilliseconds = Math.floor(Math.random() * 5 + 1) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delayTimeInMilliseconds));
+      await selectedFunction();
+    }
+  })();
+}
+}, [mixer, actions, idleBackwardsNoEyesAction, idleAction]);  
 			
 
 	return (
