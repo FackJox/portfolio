@@ -11,413 +11,470 @@ import * as THREE from "three";
 const randomDelay = Math.floor(Math.random() * (15000 - 5000 + 1) + 5000);
 
 export default function Head(props) {
-	const group = useRef();
-	const { nodes, materials, animations } = useGLTF("/head.glb");
-	const { actions, mixer } = useAnimations(animations, group);
-	const clock = new THREE.Clock();
+  const group = useRef();
+  const { nodes, materials, animations } = useGLTF("/head.glb");
+  const { actions, mixer } = useAnimations(animations, group);
+  const clock = new THREE.Clock();
 
-	// const { scene } = useThree();
+  // const { scene } = useThree();
 
-	const idleAction = actions["Idle"];
-	const idleBackwardsNoEyesAction = actions["IdleBackwardsNoEyes"];
-	const leftFaceAction = actions["RightFace"];
-	const leftSkullAction = actions["RightSkull"];
-	const rightFaceAction = actions["LeftFace"];
-	const rightSkullAction = actions["LeftSkull"];
-	const bottomFaceAction = actions["BottomFace"];
+  const idleAction = actions["Idle"];
+  const idleBackwardsNoEyesAction = actions["IdleBackwardsNoEyes"];
+  const leftFaceAction = actions["RightFace"];
+  const leftSkullAction = actions["RightSkull"];
+  const rightFaceAction = actions["LeftFace"];
+  const rightSkullAction = actions["LeftSkull"];
+  const bottomFaceAction = actions["BottomFace"];
 
-	// useEffect(() => {
-	// 	console.log("inside use effect1", mixer._actions )
+  // useEffect(() => {
+  // 	console.log("inside use effect1", mixer._actions )
 
-	// 	console.log("inside use effect2", actions)
-	// 	if (mixer && mixer._actions) {
-	// 	  console.log("Current animation:", mixer.clipAction(mixer._actions[0].clip).getClip().name);
-	// 	}
-	//   }, [mixer]);
+  // 	console.log("inside use effect2", actions)
+  // 	if (mixer && mixer._actions) {
+  // 	  console.log("Current animation:", mixer.clipAction(mixer._actions[0].clip).getClip().name);
+  // 	}
+  //   }, [mixer]);
 
-	useEffect(() => {
-		if (idleAction) {
-
-			console.info(
-				"🚀 ~ file: Head.jsx:36 ~ useEffect ~ idleAction:",
-				idleAction.isRunning()
-				);
-			}
-			if (idleBackwardsNoEyesAction) {
-
-				console.info(
-					"🚀 ~ file: Head.jsx:38 ~ useEffect ~ idleBackwardsNoEyesAction:",
-					idleBackwardsNoEyesAction.isRunning()
-					);
-				}
-				if (leftFaceAction) {
-
-					console.info(
-						"🚀 ~ file: Head.jsx:40 ~ useEffect ~ leftFaceAction:",
-						leftFaceAction.isRunning()
-						);
-					}
-					if (leftSkullAction) {
-
-						console.info(
-							"🚀 ~ file: Head.jsx:42 ~ useEffect ~ leftSkullAction:",
-							leftSkullAction.isRunning()
-							);
-						}
-						if (rightFaceAction) {
-
-							console.info(
-								"🚀 ~ file: Head.jsx:44 ~ useEffect ~ rightFaceAction:",
-								rightFaceAction.isRunning()
-								);
-							}
-							if (rightSkullAction) {
-
-								console.info(
-									"🚀 ~ file: Head.jsx:46 ~ useEffect ~ rightSkullAction:",
-									rightSkullAction.isRunning()
-									);
-								}
-								if (bottomFaceAction) {
-
-									console.info(
-										"🚀 ~ file: Head.jsx:48 ~ useEffect ~ bottomFaceAction:",
-										bottomFaceAction.isRunning()
-										);
-									}
-									if ( mixer) {
-										console.info("mixer", mixer)
-									}
-	}, [mixer,
-		idleAction,
-		idleBackwardsNoEyesAction,
-		leftFaceAction,
-		leftSkullAction,
-		rightFaceAction,
-		rightSkullAction,
-		bottomFaceAction,
-	]);
-
-	const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
-	const mousePosRef = useRef(mousePos);
-
-	useEffect(() => {
-		mousePosRef.current = mousePos;
-	}, [mousePos]);
-
-	useEffect(() => {
-		const handleMouseMove = (e) => {
-			const x = e.clientX / window.innerWidth;
-			const y = e.clientY / window.innerHeight;
-			setMousePos({ x, y });
-			// console.log("mouse POS", mousePos);
-		};
-
-		window.addEventListener("mousemove", handleMouseMove);
-		return () => window.removeEventListener("mousemove", handleMouseMove);
-	}, [mousePos]);
-
-	useFrame((_, delta) => {
-		// handleAnimation(mousePosRef.current);
-		mixer.update(delta);
-		// console.log("🚀 ~ file: Head.jsx:98 ~ useFrame ~ mousePosRef.current:", mousePosRef.current)
-	});
-
-	let prevProgress = {
-		left: 0,
-		right: 0,
-		bottom: 0,
-	};
-	let targetProgress = {
-		left: 0,
-		right: 0,
-		bottom: 0,
-	};
-
-	function lerp(a, b, t) {
-		return a + (b - a) * t;
-	}
-
-	useEffect(() => {
-		if (!leftFaceAction || !leftSkullAction || !rightFaceAction || !rightSkullAction || !bottomFaceAction) {
-		  return;
-		}
-	  
-		let mousePos = mousePosRef.current;
-
-		// console.log(
-		// 	"🚀 ~ file: Head.jsx:107 ~ useEffect ~ mousePos:",
-		// 	mousePos
-		// );
-		// mixer.stopAllAction();
-
-		if (mousePos.x <= 0.45 && mousePos.y <= 0.45) {
-			targetProgress.left = 1 - mousePos.x / 0.45;
-			rightFaceAction.stop();
-			bottomFaceAction.stop();
-		} 
-		else if (mousePos.x >= 0.55 && mousePos.y <= 0.45) {
-			targetProgress.right = (mousePos.x - 0.55) / 0.25;
-			leftFaceAction.stop();
-			bottomFaceAction.stop();
-
-		}
-		
-		else if (mousePos.y >= 0.55) {
-			targetProgress.bottom = (mousePos.y - 0.55) / 0.25;
-			leftFaceAction.stop()
-			rightFaceAction.stop()
-		}
-
-		function handleAnimation() {
-			prevProgress.left = lerp(
-				prevProgress.left,
-				targetProgress.left,
-				1.0
-			);
-			prevProgress.right = lerp(
-				prevProgress.right,
-				targetProgress.right,
-				1.0
-			);
-			prevProgress.bottom = lerp(
-				prevProgress.bottom,
-				targetProgress.bottom,
-				1.0
-			);
-
-			leftFaceAction.time =
-				leftFaceAction._clip.duration * prevProgress.left;
-			leftSkullAction.time =
-				leftSkullAction._clip.duration * prevProgress.left;
-
-
-			rightFaceAction.time =
-				rightFaceAction._clip.duration * prevProgress.right;
-			rightSkullAction.time =
-				rightSkullAction._clip.duration * prevProgress.right;
-
-			
-			bottomFaceAction.time =
-				bottomFaceAction._clip.duration * prevProgress.bottom;
-
-				console.group('Animation Progress');
-				console.log('leftFaceAction progress:', leftFaceAction.time / leftFaceAction._clip.duration);
-				console.log('rightFaceAction progress:', rightFaceAction.time / rightFaceAction._clip.duration);
-				console.log('bottomFaceAction progress:', bottomFaceAction.time / bottomFaceAction._clip.duration);
-				console.groupEnd();
-
-			leftFaceAction.timeScale = 1
-			leftFaceAction.setDuration(leftFaceAction._clip.duration)
-			leftFaceAction.clampWhenFinished = true
-			leftFaceAction.loop = THREE.LoopOnce
-			leftFaceAction.play();
-			leftSkullAction.timeScale = 1
-			leftSkullAction.setDuration(leftSkullAction._clip.duration)
-			leftSkullAction.clampWhenFinished = true
-			leftSkullAction.loop = THREE.LoopOnce
-			leftFaceAction.setEffectiveWeight(0);
-			leftSkullAction.play();
-
-
-			rightFaceAction.timeScale = 1
-			rightFaceAction.setDuration(rightFaceAction._clip.duration)
-			rightFaceAction.clampWhenFinished = true
-			rightFaceAction.loop = THREE.LoopOnce
-			rightFaceAction.setEffectiveWeight(0);
-			rightFaceAction.play();
-			rightSkullAction.timeScale = 1
-			rightSkullAction.setDuration(rightSkullAction._clip.duration)
-			rightSkullAction.clampWhenFinished = true
-			rightSkullAction.loop = THREE.LoopOnce
-			rightSkullAction.play();
-			
-			
-			bottomFaceAction.timeScale = 1
-			bottomFaceAction.setDuration(bottomFaceAction._clip.duration)
-			bottomFaceAction.clampWhenFinished = true
-			bottomFaceAction.loop = THREE.LoopOnce
-			bottomFaceAction.setEffectiveWeight(0);
-			bottomFaceAction.play();
-
-			requestAnimationFrame(handleAnimation);
-		}
-
-		handleAnimation();
-	}, [mousePosRef.current, actions, leftFaceAction, leftSkullAction, rightFaceAction, rightSkullAction, bottomFaceAction])
-
-	
-	const playIdleAnimation = () => {
-		return new Promise(resolve => {
-			if (!idleAction) {
-				console.error('idleAction is undefined');
-				return;
-			  }
-			idleAction.reset().play();
-			idleAction.loop = THREE.LoopOnce
-			idleAction.setEffectiveWeight(1);
-			mixer.addEventListener('finished', resolve)
-			console.log("playIdleAnimation")
-		});
-	}
-	
-	const playIdleBackwardsAnimation = () => {
-		return new Promise(resolve => {
-			if (!idleBackwardsNoEyesAction) {
-				console.error('idleBackwardsNoEyesAction is undefined');
-				return;
-			  }
-			idleBackwardsNoEyesAction.reset().play();
-			idleAction.setEffectiveWeight(1);
-			idleBackwardsNoEyesAction.setEffectiveWeight(1);
-			idleAction.loop = THREE.LoopOnce
-			mixer.addEventListener('finished', resolve)
-			console.log("playIdleBackwardsAnimation")
-
-		});
-	}
-	
-	const playBothIdleAnimations = () => {
-		return new Promise(resolve => {
-			if (!idleBackwardsNoEyesAction && !idleAction) {
-				console.error('idleBackwardsNoEyesAction and idleActionis undefined');
-				return;
-			  }
-
-			idleBackwardsNoEyesAction.loop = THREE.LoopOnce
-			idleBackwardsNoEyesAction.setEffectiveWeight(1);
-			idleBackwardsNoEyesAction.reset().play();
-			idleAction.loop = THREE.LoopOnce
-			idleAction.setEffectiveWeight(1);
-			idleAction.reset().play();
-			mixer.addEventListener('finished', resolve)
-			console.log("playBothIdleAnimations")
-
-		});
-	}
-
-	const animationFunctions = [playIdleAnimation, playIdleBackwardsAnimation, playBothIdleAnimations];
-
-	const currentAnimation = useRef();  
- 
-useEffect(() => {
-	if (idleBackwardsNoEyesAction && idleAction) {
-  (async () => {
-    while (true) {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * animationFunctions.length);
-      } while (animationFunctions[randomIndex] === currentAnimation.current);
-      const selectedFunction = animationFunctions[randomIndex];
-      currentAnimation.current = selectedFunction; 
-      
-      const randomSpeed = Math.random() * (1.0 - 0.5) + 0.5;
-      mixer.timeScale = randomSpeed
-      console.log("randomSpeed", randomSpeed)
-      mixer.stopAllAction()
-	  const delayTimeInMilliseconds = Math.floor(Math.random() * 5 + 1) * 1000;
-      await new Promise(resolve => setTimeout(resolve, delayTimeInMilliseconds));
-      await selectedFunction();
+  useEffect(() => {
+    if (idleAction) {
+      console.info(
+        "🚀 ~ file: Head.jsx:36 ~ useEffect ~ idleAction:",
+        idleAction.isRunning()
+      );
     }
-  })();
-}
-}, [mixer, actions, idleBackwardsNoEyesAction, idleAction]);  
-			
+    if (idleBackwardsNoEyesAction) {
+      console.info(
+        "🚀 ~ file: Head.jsx:38 ~ useEffect ~ idleBackwardsNoEyesAction:",
+        idleBackwardsNoEyesAction.isRunning()
+      );
+    }
+    if (leftFaceAction) {
+      console.info(
+        "🚀 ~ file: Head.jsx:40 ~ useEffect ~ leftFaceAction:",
+        leftFaceAction.isRunning()
+      );
+    }
+    if (leftSkullAction) {
+      console.info(
+        "🚀 ~ file: Head.jsx:42 ~ useEffect ~ leftSkullAction:",
+        leftSkullAction.isRunning()
+      );
+    }
+    if (rightFaceAction) {
+      console.info(
+        "🚀 ~ file: Head.jsx:44 ~ useEffect ~ rightFaceAction:",
+        rightFaceAction.isRunning()
+      );
+    }
+    if (rightSkullAction) {
+      console.info(
+        "🚀 ~ file: Head.jsx:46 ~ useEffect ~ rightSkullAction:",
+        rightSkullAction.isRunning()
+      );
+    }
+    if (bottomFaceAction) {
+      console.info(
+        "🚀 ~ file: Head.jsx:48 ~ useEffect ~ bottomFaceAction:",
+        bottomFaceAction.isRunning()
+      );
+    }
+    if (mixer) {
+      console.info("mixer", mixer);
+    }
+  }, [
+    mixer,
+    idleAction,
+    idleBackwardsNoEyesAction,
+    leftFaceAction,
+    leftSkullAction,
+    rightFaceAction,
+    rightSkullAction,
+    bottomFaceAction,
+  ]);
 
-	return (
-		<group ref={group} {...props} dispose={null}>
-		  <group name="Scene">
-			<group name="r_skul">
-			  <primitive object={nodes.Bone} />
-			</group>
-			<group name="l_skull">
-			  <primitive object={nodes.Bone_1} />
-			</group>
-			<group name="face_deform">
-			  <primitive object={nodes['DEF-earL']} />
-			  <primitive object={nodes['DEF-earL001']} />
-			  <primitive object={nodes['DEF-earL002']} />
-			  <primitive object={nodes['DEF-earL004']} />
-			  <primitive object={nodes['DEF-earR']} />
-			  <primitive object={nodes['DEF-earR001']} />
-			  <primitive object={nodes['DEF-earR002']} />
-			  <primitive object={nodes['DEF-earR004']} />
-			  <primitive object={nodes['DEF-teethT']} />
-			  <primitive object={nodes['DEF-nose002']} />
-			  <primitive object={nodes['DEF-noseL001']} />
-			  <primitive object={nodes['DEF-noseR001']} />
-			  <primitive object={nodes['DEF-eye_masterL']} />
-			  <primitive object={nodes['DEF-lidBL']} />
-			  <primitive object={nodes['DEF-lidTL']} />
-			  <primitive object={nodes['DEF-eyeL']} />
-			  <primitive object={nodes['DEF-eye_masterR']} />
-			  <primitive object={nodes['DEF-lidBR']} />
-			  <primitive object={nodes['DEF-lidTR']} />
-			  <primitive object={nodes['DEF-eyeR']} />
-			  <primitive object={nodes['DEF-teethB']} />
-			  <primitive object={nodes['DEF-tongue']} />
-			  <primitive object={nodes['DEF-jaw_master']} />
-			  <primitive object={nodes['DEF-chin']} />
-			  <primitive object={nodes['DEF-jaw']} />
-			  <primitive object={nodes['DEF-jawL']} />
-			  <primitive object={nodes['DEF-jawR']} />
-			  <primitive object={nodes['DEF-lipTL']} />
-			  <primitive object={nodes['DEF-lipTR']} />
-			  <primitive object={nodes['DEF-lipBL']} />
-			  <primitive object={nodes['DEF-lipBR']} />
-			  <primitive object={nodes['DEF-browBL']} />
-			  <primitive object={nodes['DEF-browBL004']} />
-			  <primitive object={nodes['DEF-browBR']} />
-			  <primitive object={nodes['DEF-browBR004']} />
-			  <primitive object={nodes['DEF-browTL']} />
-			  <primitive object={nodes['DEF-browTL001']} />
-			  <primitive object={nodes['DEF-browTL003']} />
-			  <primitive object={nodes['DEF-browTR']} />
-			  <primitive object={nodes['DEF-browTR001']} />
-			  <primitive object={nodes['DEF-browTR003']} />
-			  <primitive object={nodes['DEF-cheekBL']} />
-			  <primitive object={nodes['DEF-cheekBR']} />
-			  <primitive object={nodes['DEF-cheekTL']} />
-			  <primitive object={nodes['DEF-cheekTR']} />
-			  <primitive object={nodes['DEF-foreheadL']} />
-			  <primitive object={nodes['DEF-foreheadL001']} />
-			  <primitive object={nodes['DEF-foreheadL002']} />
-			  <primitive object={nodes['DEF-foreheadR']} />
-			  <primitive object={nodes['DEF-foreheadR001']} />
-			  <primitive object={nodes['DEF-foreheadR002']} />
-			  <primitive object={nodes['DEF-nose']} />
-			  <primitive object={nodes['DEF-nose004']} />
-			  <primitive object={nodes['DEF-templeL']} />
-			  <primitive object={nodes['DEF-templeR']} />
-			</group>
-			<mesh name="brain" geometry={nodes.brain.geometry} material={materials['default.001']} />
-			<group name="SkullR">
-			  <skinnedMesh name="Icosphere001" geometry={nodes.Icosphere001.geometry} material={materials.hair} skeleton={nodes.Icosphere001.skeleton} />
-			  <skinnedMesh name="Icosphere001_1" geometry={nodes.Icosphere001_1.geometry} material={materials['FB HEAD UKRAIN']} skeleton={nodes.Icosphere001_1.skeleton} />
-			</group>
-			<group name="SkullL">
-			  <skinnedMesh name="Icosphere002" geometry={nodes.Icosphere002.geometry} material={materials.hair} skeleton={nodes.Icosphere002.skeleton} />
-			  <skinnedMesh name="Icosphere002_1" geometry={nodes.Icosphere002_1.geometry} material={materials['FB HEAD UKRAIN']} skeleton={nodes.Icosphere002_1.skeleton} />
-			</group>
-			<group name="EyeL">
-			  <skinnedMesh name="Sphere002" geometry={nodes.Sphere002.geometry} material={materials.PaletteMaterial001} skeleton={nodes.Sphere002.skeleton} />
-			  <skinnedMesh name="Sphere002_1" geometry={nodes.Sphere002_1.geometry} material={materials.Eye} skeleton={nodes.Sphere002_1.skeleton} />
-			</group>
-			<skinnedMesh name="LowerTeeth" geometry={nodes.LowerTeeth.geometry} material={materials['wire_134006006.001']} skeleton={nodes.LowerTeeth.skeleton} />
-			<skinnedMesh name="Tongue" geometry={nodes.Tongue.geometry} material={materials.wire_143224087} skeleton={nodes.Tongue.skeleton} />
-			<skinnedMesh name="UpperTeeth" geometry={nodes.UpperTeeth.geometry} material={materials['wire_134006006.001']} skeleton={nodes.UpperTeeth.skeleton} />
-			<group name="EyeR">
-			  <skinnedMesh name="Sphere001" geometry={nodes.Sphere001.geometry} material={materials.PaletteMaterial001} skeleton={nodes.Sphere001.skeleton} />
-			  <skinnedMesh name="Sphere001_1" geometry={nodes.Sphere001_1.geometry} material={materials.Eye} skeleton={nodes.Sphere001_1.skeleton} />
-			</group>
-			<group name="head">
-			  <skinnedMesh name="Icosphere" geometry={nodes.Icosphere.geometry} material={materials.PaletteMaterial002} skeleton={nodes.Icosphere.skeleton} morphTargetDictionary={nodes.Icosphere.morphTargetDictionary} morphTargetInfluences={nodes.Icosphere.morphTargetInfluences} />
-			  <skinnedMesh name="Icosphere_1" geometry={nodes.Icosphere_1.geometry} material={materials.hair} skeleton={nodes.Icosphere_1.skeleton} morphTargetDictionary={nodes.Icosphere_1.morphTargetDictionary} morphTargetInfluences={nodes.Icosphere_1.morphTargetInfluences} />
-			  <skinnedMesh name="Icosphere_2" geometry={nodes.Icosphere_2.geometry} material={materials['FB HEAD UKRAIN']} skeleton={nodes.Icosphere_2.skeleton} morphTargetDictionary={nodes.Icosphere_2.morphTargetDictionary} morphTargetInfluences={nodes.Icosphere_2.morphTargetInfluences} />
-			</group>
-		  </group>
-		</group>
-	);
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const mousePosRef = useRef(mousePos);
+
+  useEffect(() => {
+    mousePosRef.current = mousePos;
+  }, [mousePos]);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = e.clientX / window.innerWidth;
+      const y = e.clientY / window.innerHeight;
+      setMousePos({ x, y });
+      // console.log("mouse POS", mousePos);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mousePos]);
+
+  useFrame((_, delta) => {
+    // handleAnimation(mousePosRef.current);
+    mixer.update(delta);
+    // console.log("🚀 ~ file: Head.jsx:98 ~ useFrame ~ mousePosRef.current:", mousePosRef.current)
+  });
+
+  let prevProgress = {
+    left: 0,
+    right: 0,
+    bottom: 0,
+  };
+  let targetProgress = {
+    left: 0,
+    right: 0,
+    bottom: 0,
+  };
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function setMouseAnimationProperties(animation, progress) {
+    animation.time = animation._clip.duration * progress;
+    animation.timeScale = 1;
+    animation.setDuration(animation._clip.duration);
+    animation.clampWhenFinished = true;
+    animation.loop = THREE.LoopOnce;
+    animation.play();
+  }
+
+  useEffect(() => {
+    if (
+      !leftFaceAction ||
+      !leftSkullAction ||
+      !rightFaceAction ||
+      !rightSkullAction ||
+      !bottomFaceAction
+    ) {
+      return;
+    }
+
+    let mousePos = mousePosRef.current;
+
+    // console.log(
+    // 	"🚀 ~ file: Head.jsx:107 ~ useEffect ~ mousePos:",
+    // 	mousePos
+    // );
+    // mixer.stopAllAction();
+
+    if (mousePos.x <= 0.45 && mousePos.y <= 0.45) {
+      targetProgress.left = 1 - mousePos.x / 0.45;
+      rightFaceAction.stop();
+      bottomFaceAction.stop();
+    } else if (mousePos.x >= 0.55 && mousePos.y <= 0.45) {
+      targetProgress.right = (mousePos.x - 0.55) / 0.25;
+      leftFaceAction.stop();
+      bottomFaceAction.stop();
+    } else if (mousePos.y >= 0.55) {
+      targetProgress.bottom = (mousePos.y - 0.55) / 0.25;
+      leftFaceAction.stop();
+      rightFaceAction.stop();
+    }
+
+    function handleAnimation() {
+      prevProgress.left = lerp(prevProgress.left, targetProgress.left, 1.0);
+      prevProgress.right = lerp(prevProgress.right, targetProgress.right, 1.0);
+      prevProgress.bottom = lerp(
+        prevProgress.bottom,
+        targetProgress.bottom,
+        1.0
+      );
+
+      console.group("Animation Progress");
+      console.log(
+        "leftFaceAction progress:",
+        leftFaceAction.time / leftFaceAction._clip.duration
+      );
+      console.log(
+        "rightFaceAction progress:",
+        rightFaceAction.time / rightFaceAction._clip.duration
+      );
+      console.log(
+        "bottomFaceAction progress:",
+        bottomFaceAction.time / bottomFaceAction._clip.duration
+      );
+      console.groupEnd();
+
+      setMouseAnimationProperties(leftFaceAction, prevProgress.left);
+      setMouseAnimationProperties(leftSkullAction, prevProgress.left);
+      setMouseAnimationProperties(rightFaceAction, prevProgress.right);
+      setMouseAnimationProperties(rightSkullAction, prevProgress.right);
+      setMouseAnimationProperties(bottomFaceAction, prevProgress.bottom);
+
+       requestAnimationFrame(handleAnimation);
+    }
+
+    handleAnimation();
+  }, [
+    mousePosRef.current,
+    actions,
+    leftFaceAction,
+    leftSkullAction,
+    rightFaceAction,
+    rightSkullAction,
+    bottomFaceAction,
+  ]);
+
+  const playIdleAnimation = () => {
+    return new Promise((resolve) => {
+      if (!idleAction) {
+        console.error("idleAction is undefined");
+        return;
+      }
+      idleAction.reset().play();
+      idleAction.loop = THREE.LoopOnce;
+      idleAction.setEffectiveWeight(1);
+      mixer.addEventListener("finished", resolve);
+      console.log("playIdleAnimation");
+    });
+  };
+
+  const playIdleBackwardsAnimation = () => {
+    return new Promise((resolve) => {
+      if (!idleBackwardsNoEyesAction) {
+        console.error("idleBackwardsNoEyesAction is undefined");
+        return;
+      }
+      idleBackwardsNoEyesAction.reset().play();
+      idleAction.setEffectiveWeight(1);
+      idleBackwardsNoEyesAction.setEffectiveWeight(1);
+      idleAction.loop = THREE.LoopOnce;
+      mixer.addEventListener("finished", resolve);
+      console.log("playIdleBackwardsAnimation");
+    });
+  };
+
+  const playBothIdleAnimations = () => {
+    return new Promise((resolve) => {
+      if (!idleBackwardsNoEyesAction && !idleAction) {
+        console.error("idleBackwardsNoEyesAction and idleActionis undefined");
+        return;
+      }
+
+      idleBackwardsNoEyesAction.loop = THREE.LoopOnce;
+      idleBackwardsNoEyesAction.setEffectiveWeight(1);
+      idleBackwardsNoEyesAction.reset().play();
+      idleAction.loop = THREE.LoopOnce;
+      idleAction.setEffectiveWeight(1);
+      idleAction.reset().play();
+      mixer.addEventListener("finished", resolve);
+      console.log("playBothIdleAnimations");
+    });
+  };
+
+  const animationFunctions = [
+    playIdleAnimation,
+    playIdleBackwardsAnimation,
+    playBothIdleAnimations,
+  ];
+
+  const currentAnimation = useRef();
+
+  useEffect(() => {
+    if (idleBackwardsNoEyesAction && idleAction) {
+      (async () => {
+        while (true) {
+          let randomIndex;
+          do {
+            randomIndex = Math.floor(Math.random() * animationFunctions.length);
+          } while (
+            animationFunctions[randomIndex] === currentAnimation.current
+          );
+          const selectedFunction = animationFunctions[randomIndex];
+          currentAnimation.current = selectedFunction;
+
+          const randomSpeed = Math.random() * (1.0 - 0.5) + 0.5;
+          mixer.timeScale = randomSpeed;
+          console.log("randomSpeed", randomSpeed);
+          mixer.stopAllAction();
+          const delayTimeInMilliseconds =
+            Math.floor(Math.random() * 5 + 1) * 1000;
+          await new Promise((resolve) =>
+            setTimeout(resolve, delayTimeInMilliseconds)
+          );
+          await selectedFunction();
+        }
+      })();
+    }
+  }, [mixer, actions, idleBackwardsNoEyesAction, idleAction]);
+
+  return (
+    <group ref={group} {...props} dispose={null}>
+      <group name="Scene">
+        <group name="r_skul">
+          <primitive object={nodes.Bone} />
+        </group>
+        <group name="l_skull">
+          <primitive object={nodes.Bone_1} />
+        </group>
+        <group name="face_deform">
+          <primitive object={nodes["DEF-earL"]} />
+          <primitive object={nodes["DEF-earL001"]} />
+          <primitive object={nodes["DEF-earL002"]} />
+          <primitive object={nodes["DEF-earL004"]} />
+          <primitive object={nodes["DEF-earR"]} />
+          <primitive object={nodes["DEF-earR001"]} />
+          <primitive object={nodes["DEF-earR002"]} />
+          <primitive object={nodes["DEF-earR004"]} />
+          <primitive object={nodes["DEF-teethT"]} />
+          <primitive object={nodes["DEF-nose002"]} />
+          <primitive object={nodes["DEF-noseL001"]} />
+          <primitive object={nodes["DEF-noseR001"]} />
+          <primitive object={nodes["DEF-eye_masterL"]} />
+          <primitive object={nodes["DEF-lidBL"]} />
+          <primitive object={nodes["DEF-lidTL"]} />
+          <primitive object={nodes["DEF-eyeL"]} />
+          <primitive object={nodes["DEF-eye_masterR"]} />
+          <primitive object={nodes["DEF-lidBR"]} />
+          <primitive object={nodes["DEF-lidTR"]} />
+          <primitive object={nodes["DEF-eyeR"]} />
+          <primitive object={nodes["DEF-teethB"]} />
+          <primitive object={nodes["DEF-tongue"]} />
+          <primitive object={nodes["DEF-jaw_master"]} />
+          <primitive object={nodes["DEF-chin"]} />
+          <primitive object={nodes["DEF-jaw"]} />
+          <primitive object={nodes["DEF-jawL"]} />
+          <primitive object={nodes["DEF-jawR"]} />
+          <primitive object={nodes["DEF-lipTL"]} />
+          <primitive object={nodes["DEF-lipTR"]} />
+          <primitive object={nodes["DEF-lipBL"]} />
+          <primitive object={nodes["DEF-lipBR"]} />
+          <primitive object={nodes["DEF-browBL"]} />
+          <primitive object={nodes["DEF-browBL004"]} />
+          <primitive object={nodes["DEF-browBR"]} />
+          <primitive object={nodes["DEF-browBR004"]} />
+          <primitive object={nodes["DEF-browTL"]} />
+          <primitive object={nodes["DEF-browTL001"]} />
+          <primitive object={nodes["DEF-browTL003"]} />
+          <primitive object={nodes["DEF-browTR"]} />
+          <primitive object={nodes["DEF-browTR001"]} />
+          <primitive object={nodes["DEF-browTR003"]} />
+          <primitive object={nodes["DEF-cheekBL"]} />
+          <primitive object={nodes["DEF-cheekBR"]} />
+          <primitive object={nodes["DEF-cheekTL"]} />
+          <primitive object={nodes["DEF-cheekTR"]} />
+          <primitive object={nodes["DEF-foreheadL"]} />
+          <primitive object={nodes["DEF-foreheadL001"]} />
+          <primitive object={nodes["DEF-foreheadL002"]} />
+          <primitive object={nodes["DEF-foreheadR"]} />
+          <primitive object={nodes["DEF-foreheadR001"]} />
+          <primitive object={nodes["DEF-foreheadR002"]} />
+          <primitive object={nodes["DEF-nose"]} />
+          <primitive object={nodes["DEF-nose004"]} />
+          <primitive object={nodes["DEF-templeL"]} />
+          <primitive object={nodes["DEF-templeR"]} />
+        </group>
+        <mesh
+          name="brain"
+          geometry={nodes.brain.geometry}
+          material={materials["default.001"]}
+        />
+        <group name="SkullR">
+          <skinnedMesh
+            name="Icosphere001"
+            geometry={nodes.Icosphere001.geometry}
+            material={materials.hair}
+            skeleton={nodes.Icosphere001.skeleton}
+          />
+          <skinnedMesh
+            name="Icosphere001_1"
+            geometry={nodes.Icosphere001_1.geometry}
+            material={materials["FB HEAD UKRAIN"]}
+            skeleton={nodes.Icosphere001_1.skeleton}
+          />
+        </group>
+        <group name="SkullL">
+          <skinnedMesh
+            name="Icosphere002"
+            geometry={nodes.Icosphere002.geometry}
+            material={materials.hair}
+            skeleton={nodes.Icosphere002.skeleton}
+          />
+          <skinnedMesh
+            name="Icosphere002_1"
+            geometry={nodes.Icosphere002_1.geometry}
+            material={materials["FB HEAD UKRAIN"]}
+            skeleton={nodes.Icosphere002_1.skeleton}
+          />
+        </group>
+        <group name="EyeL">
+          <skinnedMesh
+            name="Sphere002"
+            geometry={nodes.Sphere002.geometry}
+            material={materials.PaletteMaterial001}
+            skeleton={nodes.Sphere002.skeleton}
+          />
+          <skinnedMesh
+            name="Sphere002_1"
+            geometry={nodes.Sphere002_1.geometry}
+            material={materials.Eye}
+            skeleton={nodes.Sphere002_1.skeleton}
+          />
+        </group>
+        <skinnedMesh
+          name="LowerTeeth"
+          geometry={nodes.LowerTeeth.geometry}
+          material={materials["wire_134006006.001"]}
+          skeleton={nodes.LowerTeeth.skeleton}
+        />
+        <skinnedMesh
+          name="Tongue"
+          geometry={nodes.Tongue.geometry}
+          material={materials.wire_143224087}
+          skeleton={nodes.Tongue.skeleton}
+        />
+        <skinnedMesh
+          name="UpperTeeth"
+          geometry={nodes.UpperTeeth.geometry}
+          material={materials["wire_134006006.001"]}
+          skeleton={nodes.UpperTeeth.skeleton}
+        />
+        <group name="EyeR">
+          <skinnedMesh
+            name="Sphere001"
+            geometry={nodes.Sphere001.geometry}
+            material={materials.PaletteMaterial001}
+            skeleton={nodes.Sphere001.skeleton}
+          />
+          <skinnedMesh
+            name="Sphere001_1"
+            geometry={nodes.Sphere001_1.geometry}
+            material={materials.Eye}
+            skeleton={nodes.Sphere001_1.skeleton}
+          />
+        </group>
+        <group name="head">
+          <skinnedMesh
+            name="Icosphere"
+            geometry={nodes.Icosphere.geometry}
+            material={materials.PaletteMaterial002}
+            skeleton={nodes.Icosphere.skeleton}
+            morphTargetDictionary={nodes.Icosphere.morphTargetDictionary}
+            morphTargetInfluences={nodes.Icosphere.morphTargetInfluences}
+          />
+          <skinnedMesh
+            name="Icosphere_1"
+            geometry={nodes.Icosphere_1.geometry}
+            material={materials.hair}
+            skeleton={nodes.Icosphere_1.skeleton}
+            morphTargetDictionary={nodes.Icosphere_1.morphTargetDictionary}
+            morphTargetInfluences={nodes.Icosphere_1.morphTargetInfluences}
+          />
+          <skinnedMesh
+            name="Icosphere_2"
+            geometry={nodes.Icosphere_2.geometry}
+            material={materials["FB HEAD UKRAIN"]}
+            skeleton={nodes.Icosphere_2.skeleton}
+            morphTargetDictionary={nodes.Icosphere_2.morphTargetDictionary}
+            morphTargetInfluences={nodes.Icosphere_2.morphTargetInfluences}
+          />
+        </group>
+      </group>
+    </group>
+  );
 }
 
 useGLTF.preload("/head.glb");
