@@ -10,6 +10,8 @@ A portfolio website for myself, that communicates my personality, presents my te
 ### Deployment
 The website is currently deployed on Vercel and can be found here: https://portfolio-nu-one-45.vercel.app/
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ### Requirements
 **Simple but unique and dynamic design** The design will be simple, but also change depending on user interactions. 
 
@@ -26,6 +28,8 @@ If the user moves their mouse to the bottom of the screen, then my mouth opens a
 **Mobile Friendly** A mobile friendly design to ensure the portfolio looks great and functions well on all devices, from desktops to smartphones, providing a good user experience for all visitors including those in remote mountainous areas 
 
 **Performant Website** A performant website which loads quickly and runs smoothly, to provide a good user experience, and again providing a good user experience for all visitors including those in remote mountainous areas with slow internet access
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
 ### Technologies used
 **React** for the ease of declarative syntax, component-based architecture, custom hooks and performant DOM management
@@ -38,7 +42,8 @@ If the user moves their mouse to the bottom of the screen, then my mouth opens a
 
 **Vercel Hosting** relying on Vercel's CDN / server infrastructure to ensure that the website itself is as performant as possible to a global audience.
 
- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ### Wins
 **Resting animation** - I created three animation async functions: playIdleAnimation, playIdleBackwardsAnimation, and playBothIdleAnimations, stored in animationFunctions array. These functions are randomly selected and executed using a loop setup with the useEffect React hook. This approach enables greater randomisation of the animations, using Promises so I can randomise the animation being selected, the duration of the animation and gaps between the animation to add more variety to the scene.
 
@@ -52,6 +57,8 @@ If the user moves their mouse to the bottom of the screen, then my mouth opens a
 
 **setMouseAnimationProperties** this function removed a lot of repeated code that was setting the same parameters for each of the different mouse animations. Resulting in a smaller code base and better development experience.
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ### Blockers
 **Animations clashing** or starting from the beginning on mouse movement. To get round this I added animation weights, overall logic to control the different animations and LERP to smooth out the animations.
 **Blender skinning has more than 4 weights by vertex** With GLTFs only the 4 first weights for each vertices are exported by default. It resulted in weird animation that as different to the animations I created in Blender. To get round this I redid the animations with only 4 weights and corrected any of the weirdness and re-exported.
@@ -62,13 +69,11 @@ If the user moves their mouse to the bottom of the screen, then my mouth opens a
 - Matrix / microchip background and colour theme for technical projects
 - Finish UI/UX Design, it is currently in wireframe status: ![current design](https://i.imgur.com/gHoQJwg.png)
 
-
-### Bugs
-https://github.com/FackJox/portfolio/issues
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Lessons Learnt
 
-**LERP**  By using Linear Interpolation (LERP), I was able to smooth out my animations and movements. This was particularly useful as different users may move the mouse at different rates and by different magnitudes.
+**LERP** By using Linear Interpolation (LERP), I was able to smooth out my animations and movements. This was particularly useful as different users may move the mouse at different rates and by different magnitudes.
 
 **ASYNC** By using asynchronous code I was able to add more randomisation into my idle animations and also execute other functions such as mouse movement based animations without waiting for the idle animation code to complete.
 
@@ -76,3 +81,7 @@ https://github.com/FackJox/portfolio/issues
 
 **Tree Shaking** By implementing Vite and its tree shaking in this project, I was able to eliminate dead code and reduce the size of my output bundle. Tree shaking works by including only the used exports in the final bundle, getting rid of any unused code and modules.
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+### Bugs
+https://github.com/FackJox/portfolio/issues
