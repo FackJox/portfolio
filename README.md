@@ -64,8 +64,7 @@ If the user moves their mouse to the bottom of the screen, then my mouth opens a
 
 
 ### Bugs
-- Currently not all of the site is mobile friendly, I need to work out how to replicate the animations on mouse movement and still provide a great UX on mobile. I may change the animation progress following mouse movement directly on mobile, and just have 3 areas the users can press on to give the different animations and display the project modals.
-- Camera view starts inside the brain - this will be fixed by the intro animation.
+https://github.com/FackJox/portfolio/issues
 
 ### Lessons Learnt
 
