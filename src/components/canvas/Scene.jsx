@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Stage, PresentationControls, OrbitControls, RandomizedLight, AdaptiveDpr, Environment, AccumulativeShadows } from '@react-three/drei';
 import { Perf } from 'r3f-perf';
 import Head from './head/Head'
+import Background from '../canvas/Background'
 import { suspend } from 'suspend-react';
 const warehouse = import('@pmndrs/assets/hdri/warehouse.exr')
 
@@ -14,7 +15,7 @@ export default function Scene() {
       <Stage intensity={0.5} environment={null}>
 
 
-
+        <Background />
         <PresentationControls>
         <Head />
         <OrbitControls />
