@@ -38,7 +38,7 @@ const Background = () => {
     }, []);
     
 
-    const tmouse = new THREE.Vector4((tmouse[0] - (tmouse[0] - umouse[0]) * factor),(tmouse[1] - (tmouse[1] - umouse[1]) * factor),(mouse.drag ? 1 : 0))
+    const tmouse = new THREE.Vector4((tmouse[0] - (tmouse[0] - umouse[0]) * factor),(tmouse[1] - (tmouse[1] - umouse[1]) * factor),(mousePosition.drag ? 1 : 0))
   
   
     let backgroundUniforms = {
