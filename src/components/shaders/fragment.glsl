@@ -1,9 +1,9 @@
-300 es
 precision highp float;
-out vec4 fragColor;
 uniform vec2 u_resolution;
 uniform float u_time;
 uniform vec4 u_mouse;
+varying vec2 vUv;
+
   
 #define R           u_resolution
 #define T           u_time
@@ -152,4 +152,5 @@ void main()
     C = mix(vec3(.01), C, exp(-.005*d*d*d));
     // gamma correct + output
     C = pow(C, vec3(.4545));
-    fragColor = vec4(C,1.);
+    gl_FragColor  = vec4(C,1.);
+}

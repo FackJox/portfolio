@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { extend } from '@react-three/fiber'
+import React, { useEffect, useRef, useState } from 'react';
+import { extend, useFrame } from '@react-three/fiber'
 import { shaderMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 import BGFragment from "../shaders/fragment.glsl";
 import BGVertex from "../shaders/vertex.glsl";
 
 
-const BackgroundShaderMaterial = shaderMaterial(
+const BackgroundMaterial = shaderMaterial(
   {
     u_time: 0,
     u_resolution: new THREE.Vector2(),// [gl.canvas.width, gl.canvas.height]
@@ -15,7 +15,7 @@ const BackgroundShaderMaterial = shaderMaterial(
   BGVertex,
   BGFragment
 )
-extend({ BackgroundShaderMaterial })
+extend({ BackgroundMaterial })
 
 
 const Background = () => {
@@ -26,6 +26,12 @@ const Background = () => {
 
     const factor = 0.15;
     const umouse = [mousePosition.x, mousePosition.y, 0];
+    const tmouse = new THREE.Vector4(umouse)
+    
+    tmouse[0] = tmouse[0] - (tmouse[0] - umouse[0]) * factor;
+    tmouse[1] = tmouse[1] - (tmouse[1] - umouse[1]) * factor;
+    tmouse[2] = mousePosition.drag ? 1 : 0;
+      
 
     useEffect(() => {
       const handleMouseMove = (event) => {
@@ -36,15 +42,34 @@ const Background = () => {
         window.removeEventListener('mousemove', handleMouseMove);
       };
     }, []);
+
+    
+    const [windowSize, setWindowSize] = useState({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  
+    useEffect(() => {
+      const handleWindowResize = () => {
+        setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      };
+      window.addEventListener('resize', handleWindowResize);
+  
+      // Cleanup function to remove the event listener
+      return () => {
+        window.removeEventListener('resize', handleWindowResize);
+      };
+    }, []); // Empty dependency array so the effect runs once on mount and cleans up on unmount
+  
     
 
-    const tmouse = new THREE.Vector4((tmouse[0] - (tmouse[0] - umouse[0]) * factor),(tmouse[1] - (tmouse[1] - umouse[1]) * factor),(mousePosition.drag ? 1 : 0))
-  
-  
     let backgroundUniforms = {
-      u_time: time,
+      u_time: 0,
       u_mouse: tmouse,
-      u_resolution: [gl.canvas.width, gl.canvas.height]
+      u_resolution: [windowSize.width, windowSize.height]
     };
 
 
@@ -58,21 +83,19 @@ const Background = () => {
 
 
   return (
-    <div className="h-full w-full flex items-center bg-gray-800 overflow-hidden">
     	<mesh
 					castShadow
 					receiveShadow
-					geometry={nodes.Object_2.geometry}
 					// material={materials.bubuaiStandardSurface1SG}
 				>
+        <planeGeometry args={[7, 3.94, 1, 1]} />
+
 					<backgroundMaterial
 						ref={backgroundMaterialRef}
 						side={THREE.DoubleSide}
-						uMouse={uMouse}
                         />
 				</mesh>
     
-    </div>
   );
 };
 

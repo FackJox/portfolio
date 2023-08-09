@@ -35,62 +35,62 @@ export default function Head(props) {
   // 	}
   //   }, [mixer]);
 
-  useEffect(() => {
-    if (idleAction) {
-      console.info(
-        "🚀 ~ file: Head.jsx:36 ~ useEffect ~ idleAction:",
-        idleAction.isRunning()
-      );
-    }
-    if (idleBackwardsNoEyesAction) {
-      console.info(
-        "🚀 ~ file: Head.jsx:38 ~ useEffect ~ idleBackwardsNoEyesAction:",
-        idleBackwardsNoEyesAction.isRunning()
-      );
-    }
-    if (leftFaceAction) {
-      console.info(
-        "🚀 ~ file: Head.jsx:40 ~ useEffect ~ leftFaceAction:",
-        leftFaceAction.isRunning()
-      );
-    }
-    if (leftSkullAction) {
-      console.info(
-        "🚀 ~ file: Head.jsx:42 ~ useEffect ~ leftSkullAction:",
-        leftSkullAction.isRunning()
-      );
-    }
-    if (rightFaceAction) {
-      console.info(
-        "🚀 ~ file: Head.jsx:44 ~ useEffect ~ rightFaceAction:",
-        rightFaceAction.isRunning()
-      );
-    }
-    if (rightSkullAction) {
-      console.info(
-        "🚀 ~ file: Head.jsx:46 ~ useEffect ~ rightSkullAction:",
-        rightSkullAction.isRunning()
-      );
-    }
-    if (bottomFaceAction) {
-      console.info(
-        "🚀 ~ file: Head.jsx:48 ~ useEffect ~ bottomFaceAction:",
-        bottomFaceAction.isRunning()
-      );
-    }
-    if (mixer) {
-      console.info("mixer", mixer);
-    }
-  }, [
-    mixer,
-    idleAction,
-    idleBackwardsNoEyesAction,
-    leftFaceAction,
-    leftSkullAction,
-    rightFaceAction,
-    rightSkullAction,
-    bottomFaceAction,
-  ]);
+  // useEffect(() => {
+  //   if (idleAction) {
+  //     console.info(
+  //       "🚀 ~ file: Head.jsx:36 ~ useEffect ~ idleAction:",
+  //       idleAction.isRunning()
+  //     );
+  //   }
+  //   if (idleBackwardsNoEyesAction) {
+  //     console.info(
+  //       "🚀 ~ file: Head.jsx:38 ~ useEffect ~ idleBackwardsNoEyesAction:",
+  //       idleBackwardsNoEyesAction.isRunning()
+  //     );
+  //   }
+  //   if (leftFaceAction) {
+  //     console.info(
+  //       "🚀 ~ file: Head.jsx:40 ~ useEffect ~ leftFaceAction:",
+  //       leftFaceAction.isRunning()
+  //     );
+  //   }
+  //   if (leftSkullAction) {
+  //     console.info(
+  //       "🚀 ~ file: Head.jsx:42 ~ useEffect ~ leftSkullAction:",
+  //       leftSkullAction.isRunning()
+  //     );
+  //   }
+  //   if (rightFaceAction) {
+  //     console.info(
+  //       "🚀 ~ file: Head.jsx:44 ~ useEffect ~ rightFaceAction:",
+  //       rightFaceAction.isRunning()
+  //     );
+  //   }
+  //   if (rightSkullAction) {
+  //     console.info(
+  //       "🚀 ~ file: Head.jsx:46 ~ useEffect ~ rightSkullAction:",
+  //       rightSkullAction.isRunning()
+  //     );
+  //   }
+  //   if (bottomFaceAction) {
+  //     console.info(
+  //       "🚀 ~ file: Head.jsx:48 ~ useEffect ~ bottomFaceAction:",
+  //       bottomFaceAction.isRunning()
+  //     );
+  //   }
+  //   if (mixer) {
+  //     console.info("mixer", mixer);
+  //   }
+  // }, [
+  //   mixer,
+  //   idleAction,
+  //   idleBackwardsNoEyesAction,
+  //   leftFaceAction,
+  //   leftSkullAction,
+  //   rightFaceAction,
+  //   rightSkullAction,
+  //   bottomFaceAction,
+  // ]);
 
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
   const mousePosRef = useRef(mousePos);
@@ -183,20 +183,20 @@ export default function Head(props) {
         1.0
       );
 
-      console.group("Animation Progress");
-      console.log(
-        "leftFaceAction progress:",
-        leftFaceAction.time / leftFaceAction._clip.duration
-      );
-      console.log(
-        "rightFaceAction progress:",
-        rightFaceAction.time / rightFaceAction._clip.duration
-      );
-      console.log(
-        "bottomFaceAction progress:",
-        bottomFaceAction.time / bottomFaceAction._clip.duration
-      );
-      console.groupEnd();
+      // console.group("Animation Progress");
+      // console.log(
+      //   "leftFaceAction progress:",
+      //   leftFaceAction.time / leftFaceAction._clip.duration
+      // );
+      // console.log(
+      //   "rightFaceAction progress:",
+      //   rightFaceAction.time / rightFaceAction._clip.duration
+      // );
+      // console.log(
+      //   "bottomFaceAction progress:",
+      //   bottomFaceAction.time / bottomFaceAction._clip.duration
+      // );
+      // console.groupEnd();
 
       setMouseAnimationProperties(leftFaceAction, prevProgress.left);
       setMouseAnimationProperties(leftSkullAction, prevProgress.left);

@@ -2,7 +2,7 @@ import React from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Stage, PresentationControls, OrbitControls, RandomizedLight, AdaptiveDpr, Environment, AccumulativeShadows } from '@react-three/drei';
 import { Perf } from 'r3f-perf';
-import Head from './head/Head'
+import Head from './Head'
 import Background from '../canvas/Background'
 import { suspend } from 'suspend-react';
 const warehouse = import('@pmndrs/assets/hdri/warehouse.exr')
