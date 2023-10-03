@@ -2,15 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { extend, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial, Backdrop } from '@react-three/drei'
 import * as THREE from 'three'
-import BGFragment from "../shaders/fragment.glsl";
-import BGVertex from "../shaders/vertex.glsl";
+import BGFragment from "../shaders/rainbow/fragment.glsl";
+import BGVertex from "../shaders/rainbow/vertex.glsl";
+import abstractTexture from "/abstract.jpg"
 
 
 const BackgroundMaterial = shaderMaterial(
   {
-    u_time: 0,
-    u_resolution: new THREE.Vector2(),// [gl.canvas.width, gl.canvas.height]
-    u_mouse: new THREE.Vector4(), 
+	uTime: 0,
+	lightPos: new THREE.Vector3(),
+	abstractTexture: new THREE.TextureLoader().load(abstractTexture),
+	cameraPosition: new THREE.Vector3(),
     },
   BGVertex,
   BGFragment
