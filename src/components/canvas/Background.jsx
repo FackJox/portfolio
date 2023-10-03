@@ -4,7 +4,7 @@ import { shaderMaterial, Backdrop } from '@react-three/drei'
 import * as THREE from 'three'
 import BGFragment from "../shaders/rainbow/fragment.glsl";
 import BGVertex from "../shaders/rainbow/vertex.glsl";
-import abstractTexture from "/abstract.jpg"
+import abstractTexture from "/3.jpg"
 
 
 const BackgroundMaterial = shaderMaterial(

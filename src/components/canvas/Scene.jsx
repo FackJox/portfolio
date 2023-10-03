@@ -64,7 +64,7 @@ export default function Scene() {
           {/* <color attach="background" args={['#d6edf3']} /> */}
           {/* <OrthographicCamera makeDefault position={[0, 0, 5]} zoom={80} /> */}
         
-        <Background scale={30} position={[0,-5,0]} />
+        <Background scale={1000} position={[0,-50,0]} />
         </View>
     </Canvas>
     </div>
