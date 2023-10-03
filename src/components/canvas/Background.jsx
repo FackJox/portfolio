@@ -58,12 +58,12 @@ const Background = (props) => {
 		
 		<Backdrop>
 
-			 {/* <backgroundShaderMaterial
+			 <backgroundMaterial
 				ref={backgroundShaderMaterialRef}
 				side={THREE.DoubleSide}
 				lightPos={lightPos}
-				/>  */}
-			<meshBasicMaterial ref={backgroundShaderMaterialRef} color="orange" position={position} />
+				/> 
+			{/* <meshBasicMaterial ref={backgroundShaderMaterialRef} color="orange" position={position} /> */}
 				</Backdrop>
 	</group>
 </group>
