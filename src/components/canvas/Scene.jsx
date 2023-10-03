@@ -33,7 +33,7 @@ export default function Scene() {
        }}
        gl={{ antialias: true, alpha: true }}
        >
-      <View index={1} track={view1}>
+      <View index={2} track={view1}>
       <AdaptiveDpr pixelated />
 
 
@@ -62,9 +62,9 @@ export default function Scene() {
 
       <View index={2} track={view2}>
           {/* <color attach="background" args={['#d6edf3']} /> */}
-          <OrthographicCamera makeDefault position={[0, 0, 5]} zoom={80} />
+          {/* <OrthographicCamera makeDefault position={[0, 0, 5]} zoom={80} /> */}
         
-        <Background />
+        <Background scale={20} position={[0,-1,0]} />
         </View>
     </Canvas>
     </div>
