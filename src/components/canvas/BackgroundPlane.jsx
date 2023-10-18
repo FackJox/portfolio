@@ -105,13 +105,85 @@ const Background = (props) => {
   console.log(lightPos);
   console.log(props);
 
-  return (
-    <group {...props} dispose={null}>
+  const onBeforeCompile = (shader) => {
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <project_vertex>',
+      `
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position * 2.0, 1.0);
+    `
+    )
+    shader.uniforms.uTime = customUniforms.uTime
+    
+    shader.vertexShader = shader.vertexShader.replace(
+        '#include <common>',
+        `
+        uniform float uTime;
+
+        #include <common>
+
+        mat2 get2dRotateMatrix(float _angle) {
+            return mat2(cos(_angle), - sin(_angle), sin(_angle), cos(_angle));
+        }
+        `
+    )
+
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <beginnormal_vertex>',
+      `
+      #include <beginnormal_vertex>
+      
+      float angle = (sin(position.y + uTime)) * 0.4;
+      mat2 rotateMatrix = get2dRotateMatrix(angle);
+      
+      objectNormal.xz = rotateMatrix * objectNormal.xz;
+      `
+      )
+      
+      shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', 
+      `
+    #include <begin_vertex>
+
+    transformed.xz = rotateMatrix * transformed.xz;
+    
+    `)
+  }
+  
+  depthMaterial.onBeforeCompile = (shader) =>
+  {
+    shader.uniforms.uTime = customUniforms.uTime
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <common>',
+      `
+      #include <common>
+      
+      uniform float uTime;
+      
+      mat2 get2dRotateMatrix(float _angle)
+      {
+        return mat2(cos(_angle), - sin(_angle), sin(_angle), cos(_angle));
+      }
+      `
+      )
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `
+        #include <begin_vertex>
+        
+        float angle = (sin(position.y + uTime)) * 0.4;
+        mat2 rotateMatrix = get2dRotateMatrix(angle);
+        
+        transformed.xz = rotateMatrix * transformed.xz;
+        `
+        )
+      }
+            
+      return (
+        <group {...props} dispose={null}>
       <group>
         {/* <Backdrop segments={100}>
           <backgroundMaterial
-				ref={backgroundShaderMaterialRef}
-				side={THREE.DoubleSide}
+          ref={backgroundShaderMaterialRef}
+          side={THREE.DoubleSide}
 				lightPos={lightPos}
 				/> 
 
@@ -138,8 +210,8 @@ const Background = (props) => {
                 roughnessMap-wrapS={THREE.RepeatWrapping}
                 roughnessMap-wrapT={THREE.RepeatWrapping}
                 displacementMap={displacementTexture}
-                displacementScale={0.03}
-                displacementBias={0.03}
+                displacementScale={0.05}
+                displacementBias={0.05}
                 displacementMap-wrapS={THREE.RepeatWrapping}
                 displacementMap-wrapT={THREE.RepeatWrapping}
                 normalMap={normalTexture}
