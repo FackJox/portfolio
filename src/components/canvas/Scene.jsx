@@ -5,7 +5,9 @@ import { Perf } from 'r3f-perf';
 import Head from './Head'
 import Background from '../canvas/Background'
 
-import BackgroundPlane from '../canvas/BackgroundPlane'
+import BackgroundShaders from './BackgroundShaders'
+import BackgroundPlane from './BackgroundPlane'
+
 import { suspend } from 'suspend-react';
 import useRefs from 'react-use-refs'
 import warehouse from '@pmndrs/assets/hdri/warehouse.exr'
@@ -61,11 +63,10 @@ export default function Scene() {
        </group>
        </Center>
           </Float>
-        {/* <OrbitControls /> */}
         </PresentationControls>
-        {/* <RandomizedLight amount={4} frames={20} position={[5, 5, 10]} intensity={0.1}/> */}
         <Environment files={warehouse} />
       <Perf />
+        {/* <RandomizedLight amount={4} frames={20} position={[5, 5, 10]} intensity={0.1}/> */}
       </View>
 
 
@@ -74,9 +75,11 @@ export default function Scene() {
           {/* <color attach="background" args={['#d6edf3']} /> */}
           {/* <OrthographicCamera makeDefault position={[0, 0, 5]} zoom={80} /> */}
         
-        <Background scale={1000} position={[0,-150, 50]} />
+        {/* <Background scale={1000} position={[0,-150, 50]} /> */}
+        <BackgroundPlane scale={0.15} position={[0,0, 0]} rotation={[0, 90 * Math.PI * 180, 90 * Math.PI * 180]} />
+{/* <OrbitControls /> */}
         {/* <BackgroundPlane scale={1000} position={[0,-100, 100]} /> */}
-        <ambientLight intensity={1.0} />
+        <ambientLight intensity={2.4} />
 
         </View>
     </Canvas>
