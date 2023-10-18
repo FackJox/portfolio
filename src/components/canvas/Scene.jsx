@@ -4,6 +4,8 @@ import { Stage, PresentationControls, OrbitControls, OrthographicCamera, Adaptiv
 import { Perf } from 'r3f-perf';
 import Head from './Head'
 import Background from '../canvas/Background'
+
+import BackgroundPlane from '../canvas/BackgroundPlane'
 import { suspend } from 'suspend-react';
 import useRefs from 'react-use-refs'
 import warehouse from '@pmndrs/assets/hdri/warehouse.exr'
@@ -32,6 +34,7 @@ export default function Scene() {
          gl.clearDepth()
        }}
        gl={{ antialias: true, alpha: true }}
+       camera={{ fov: 75}}
        >
       <View index={2} track={view1}>
       <AdaptiveDpr pixelated />
@@ -42,13 +45,20 @@ export default function Scene() {
         snap={{ mass: 4, tension: 1500 }}
         rotation={[0, 0.3, 0]}
         polar={[-Math.PI / 3, Math.PI / 3]}
-        azimuth={[-Math.PI / 1.4, Math.PI / 2]}
+        // azimuth={[-Math.PI / 1.4, Math.PI / 2]}
         >
           <Float>
      
        <Center >
+       <group position={[0,0,0]} rotation={[0, -45 * Math.PI * 180, 100 * Math.PI * 180]} >
 
-        <Head  scale={0.03} />
+      <mesh>
+        <boxGeometry args={[3, 3, 3]} />
+        <meshBasicMaterial color="orange" transparent opacity={0.0} />      
+        </mesh>
+           <Head  scale={0.028} position={[0,-0.5,0]} />
+
+       </group>
        </Center>
           </Float>
         {/* <OrbitControls /> */}
@@ -64,7 +74,10 @@ export default function Scene() {
           {/* <color attach="background" args={['#d6edf3']} /> */}
           {/* <OrthographicCamera makeDefault position={[0, 0, 5]} zoom={80} /> */}
         
-        <Background scale={1000} position={[0,-50,0]} />
+        <Background scale={1000} position={[0,-150, 50]} />
+        {/* <BackgroundPlane scale={1000} position={[0,-100, 100]} /> */}
+        <ambientLight intensity={1.0} />
+
         </View>
     </Canvas>
     </div>
