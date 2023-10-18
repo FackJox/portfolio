@@ -105,7 +105,8 @@ const Background = (props) => {
   console.log(lightPos);
   console.log(props);
 
-  const onBeforeCompile = (shader) => {
+  albedoTexture.onBeforeCompile = (shader) => {
+
     shader.vertexShader = shader.vertexShader.replace(
       '#include <project_vertex>',
       `
@@ -148,34 +149,34 @@ const Background = (props) => {
     `)
   }
   
-  depthMaterial.onBeforeCompile = (shader) =>
-  {
-    shader.uniforms.uTime = customUniforms.uTime
-    shader.vertexShader = shader.vertexShader.replace(
-      '#include <common>',
-      `
-      #include <common>
+  // displacementTexture.onBeforeCompile = (shader) =>
+  // {
+  //   shader.uniforms.uTime = customUniforms.uTime
+  //   shader.vertexShader = shader.vertexShader.replace(
+  //     '#include <common>',
+  //     `
+  //     #include <common>
       
-      uniform float uTime;
+  //     uniform float uTime;
       
-      mat2 get2dRotateMatrix(float _angle)
-      {
-        return mat2(cos(_angle), - sin(_angle), sin(_angle), cos(_angle));
-      }
-      `
-      )
-      shader.vertexShader = shader.vertexShader.replace(
-        '#include <begin_vertex>',
-        `
-        #include <begin_vertex>
+  //     mat2 get2dRotateMatrix(float _angle)
+  //     {
+  //       return mat2(cos(_angle), - sin(_angle), sin(_angle), cos(_angle));
+  //     }
+  //     `
+  //     )
+  //     shader.vertexShader = shader.vertexShader.replace(
+  //       '#include <begin_vertex>',
+  //       `
+  //       #include <begin_vertex>
         
-        float angle = (sin(position.y + uTime)) * 0.4;
-        mat2 rotateMatrix = get2dRotateMatrix(angle);
+  //       float angle = (sin(position.y + uTime)) * 0.4;
+  //       mat2 rotateMatrix = get2dRotateMatrix(angle);
         
-        transformed.xz = rotateMatrix * transformed.xz;
-        `
-        )
-      }
+  //       transformed.xz = rotateMatrix * transformed.xz;
+  //       `
+  //       )
+  //     }
             
       return (
         <group {...props} dispose={null}>
